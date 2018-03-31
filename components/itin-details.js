@@ -12,21 +12,12 @@ class HomeScreen extends React.Component {
   }
 }
 
-class SettingsScreen extends React.Component {
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Settings!</Text>
-      </View>
-    );
-  }
-}
-
 class FirstScreen extends React.Component {
   render() {
+    const  params = this.props.screenProps;
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>First!</Text>
+        <Text>First! {params.air_itinerary_id} </Text>
       </View>
     );
   }
@@ -34,17 +25,45 @@ class FirstScreen extends React.Component {
 
 
 export default class itin extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    
+    return {
+      title: params ? params.title : 'Flight Details',
+    }
+  };
   render() {
+    const {params} = this.props.navigation.state;
     const RootStack =  TabNavigator({
-      First: { screen: FirstScreen },
-      Home: { screen: HomeScreen },
-      Settings: { screen: SettingsScreen },
+      First: { 
+        screen: FirstScreen,
+        navigationOptions: {
+          title: 'Flight Details'
+        }
+      },
+      Home: {
+        screen: HomeScreen,
+        navigationOptions: {
+          title: 'Fare Details'
+        } 
+      }
     },{
+      initialRouteName: 'Home',
         tabBarOptions: {
-            activeTintColor: 'tomato',
-            inactiveTintColor: 'gray',
+          activeTintColor: '#e67e22',
+          inactiveTintColor: '#333333',
+          labelStyle: {
+            fontSize: 14,
+            fontWeight: 'bold',
           },
+          style: {
+            backgroundColor: '#ededed',
+          },
+          indicatorStyle: {
+            backgroundColor: '#e67e22'
+          }
+        },
     });
-    return <RootStack />;
+    return <RootStack screenProps={params.data} />;
   }
 }
