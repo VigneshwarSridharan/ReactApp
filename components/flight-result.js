@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Alert,
   Text,
   View,
   StyleSheet,
@@ -29,23 +30,35 @@ export default class FlightResult extends Component {
         load: false,
       },
       result: [],
+      message: 'Wait a moment'
     };
+    this.searchId = '';
+    this._loadReult();
   }
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
-
+    
     return {
-      title: params ? params.title : 'Flight Result',
+      title: params.title ? params.title : 'Flight Result',
     };
   };
+  _loadReult() {
+    const { params } = this.props.navigation.state;
+    
+  }
   componentDidMount() {
     const { params } = this.props.navigation.state;
     const json = params.json ? params.json : 'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-yyz.json';
+    
     fetch(
-      'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/airlines.json'
-    )
-      .then(res => res.json())
-      .then(res => {
+      'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/airlines.json',{
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    ).then(res => {
         this.setState({
           airline: res,
         });
@@ -61,13 +74,33 @@ export default class FlightResult extends Component {
       });
     // http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-del-yyz-lon-sin.json multi cicy
     // http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-yyz.json round trip
-    fetch(json).then(res => res.json())
-      .then(res => {
-        var result = res.itineraries;
+    // fetch('http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/'+ params.from +'-'+ params.to +'.json').then(res => res.json())
+    //   .then(res => {
+    //     var result = res.itineraries;
+    //     this.setState({
+    //       result: result,
+    //     });
+    //   });
+    var url = Object.keys(params).map(function(key) {
+      return key + '=' + params[key];
+    }).join('&');
+    fetch('http://otpdev.wintlt.com/dev/team/vignesh/flight/public/api/flight?'+url).then(res => res.json()).then(res => {
+      if(res.error_messages) {
+        this.setState({message: res.error_messages.messages})
+        return;
+      }
+      if(res[0].error_messages.gds_response == 'error') {
+        this.setState({message: 'Invalid airport code, Go back'});
+        return;
+      }
+      var result = res[0].itineraries ? res[0].itineraries: [];
+      this.props.navigation.setParams({ title: this.state.airports[res[0].seg0_origin].split('|')[2] + ' - ' + this.state.airports[res[0].seg0_dest].split('|')[2] });
+      this.searchId = res[0].response_id;
+      // Alert.alert(res[0].response_id)
         this.setState({
           result: result,
         });
-      });
+    });
   }
   render() {
     if ( this.state.result.length && !this.state.airports.hasOwnProperty('load') && !this.state.airline.hasOwnProperty('load') ) {
@@ -90,9 +123,12 @@ export default class FlightResult extends Component {
                 <TouchableOpacity
                           key={itin.air_itinerary_id}  
                           onPress={() => {
+                            itin.searchId = this.searchId;
+                            itin.airportCode = this.state.airports;
+                            itin.airlineCode = this.state.airline;
                             this.props.navigation.navigate('ItinDetailsScreen', {
                                 title: 'Flight Details',
-                                data: itin,
+                                data: itin
                             });
                         }}
                       >
@@ -175,6 +211,7 @@ export default class FlightResult extends Component {
         <View
           style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" />
+          <Text>{this.state.message}</Text>
         </View>
       );
     }
