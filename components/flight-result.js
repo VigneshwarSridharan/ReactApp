@@ -74,13 +74,16 @@ export default class FlightResult extends Component {
       });
     // http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-del-yyz-lon-sin.json multi cicy
     // http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-yyz.json round trip
-    // fetch('http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/'+ params.from +'-'+ params.to +'.json').then(res => res.json())
+    // fetch('http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-del.json').then(res => res.json())
     //   .then(res => {
     //     var result = res.itineraries;
+    //     this.searchId = res.response_id;
     //     this.setState({
     //       result: result,
     //     });
     //   });
+
+
     var url = Object.keys(params).map(function(key) {
       return key + '=' + params[key];
     }).join('&');

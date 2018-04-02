@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
-  ScrollView
+  ScrollView,
+  Keyboard
 } from 'react-native';
 
 import DatePicker from 'react-native-datepicker'
@@ -27,15 +28,29 @@ export default class HomeScreen extends Component {
         super(props);
         this.state = {
             tripType: 'return',
-            from: 'maa',
-            to: 'del',
+            from: '',
+            to: '',
             depDate: moment().add(1,'day').format('DD/MM/YYYY'),
-            returnDate: moment().add(2,'day').format('DD/MM/YYYY')
+            returnDate: moment().add(2,'day').format('DD/MM/YYYY'),
+            keybodarOpen: false
         }
     }
     static navigationOptions = {
         title: 'TripZumi',
-    }; 
+    };
+    componentWillMount () {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            this.setState({ keybodarOpen: true })
+        });
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide',  () => {
+            this.setState({ keybodarOpen: false })
+        });
+    }
+
+    componentWillUnmount () {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
     render() {
         return (
             // <ImageBackground source={ require('../assets/images/bg.jpg') } >
@@ -59,10 +74,12 @@ export default class HomeScreen extends Component {
                                     <TextInput
                                         underlineColorAndroid = "transparent"
                                         placeholderTextColor = "#e67e22"
+                                        returnKeyType="next"
                                         selectionColor= "#e67e22"
                                         spellCheck= {false}
                                         style={{  borderBottomColor: '#ccc', borderBottomWidth: 1,color: '#333', fontSize: 24 }}
                                         onChangeText={(text) => this.setState({from: text})}
+                                        onSubmitEditing={() => this.toInput.focus()}
                                     />
                                 </View>
                                 <View style={{ padding:10 }}>
@@ -77,10 +94,12 @@ export default class HomeScreen extends Component {
                                     <TextInput 
                                         underlineColorAndroid = "transparent"
                                         placeholderTextColor = "#e67e22"
+                                        returnKeyType="next"
                                         selectionColor= "#e67e22"
                                         spellCheck= {false}
                                         style={{ borderBottomColor: '#ccc', borderBottomWidth: 1, color: '#333', fontSize: 24 }}
                                         onChangeText={(text) => this.setState({to: text})}
+                                        ref={(input) => this.toInput = input}
                                     />
                                 </View>
                             </View>
@@ -89,7 +108,7 @@ export default class HomeScreen extends Component {
                                 <View style={{ flexDirection: 'row',alignItems: 'center', borderBottomWidth:1, borderBottomColor: '#cccccc' }}>
                                     <View style={{ flex:1 }}>
                                     <DatePicker
-                                        style={{width: 200, justifyContent: 'flex-start',}}
+                                        style={{width: "100%", justifyContent: 'flex-start',}}
                                         date={this.state.depDate}
                                         mode="date"
                                         placeholder="select date"
@@ -105,7 +124,7 @@ export default class HomeScreen extends Component {
                                             paddingTop: 10,
                                         },
                                         dateText: {
-                                            width: 200,
+                                            width:'100%',
                                             fontSize: 24,
                                             color:'#333',
                                             textAlign: 'left'
@@ -131,7 +150,7 @@ export default class HomeScreen extends Component {
                                             <View style={{ flexDirection: 'row',alignItems: 'center', borderBottomWidth:1, borderBottomColor: '#cccccc' }}>
                                                 <View style={{ flex:1 }}>
                                                 <DatePicker
-                                                    style={{width: 200, justifyContent: 'flex-start',}}
+                                                    style={{width: "100%", justifyContent: 'flex-start',}}
                                                     date={this.state.returnDate}
                                                     mode="date"
                                                     placeholder="select date"
@@ -147,7 +166,7 @@ export default class HomeScreen extends Component {
                                                         paddingTop: 10,
                                                     },
                                                     dateText: {
-                                                        width: 200,
+                                                        width: "100%",
                                                         fontSize: 24,
                                                         color:'#333',
                                                         textAlign: 'left'
@@ -189,51 +208,57 @@ export default class HomeScreen extends Component {
                             </View>
                         </ScrollView>
                     </View>
-                    
-                    <TouchableOpacity activeOpacity={0.9} onPress={() => {
-                        var from = moment(this.state.depDate, 'DD/MM/YYYY');
-                        var to = moment(this.state.returnDate, 'DD/MM/YYYY');
-                        if(this.state.from.length == 3 && this.state.to.length == 3 )
-                        {
-                            if(this.state.tripType == 'return') {
-                                if(from.diff(to, 'days') > 0) {
-                                    Alert.alert('Invalid return date');
-                                    return;
-                                }
-                                if(from.format('YYYY-MM-DD') == 'Invalid date' || to.format('YYYY-MM-DD') == 'Invalid date' ) {
-                                    Alert.alert('Select return date again.');
-                                    return;
-                                }
-                                
-                            }
-                            
+
+                    {(()=>{
+                        if(!this.state.keybodarOpen) {
+                            return (
+                                <TouchableOpacity activeOpacity={0.9} onPress={() => {
+                                    var from = moment(this.state.depDate, 'DD/MM/YYYY');
+                                    var to = moment(this.state.returnDate, 'DD/MM/YYYY');
+                                    if(this.state.from.length == 3 && this.state.to.length == 3 )
+                                    {
+                                        if(this.state.tripType == 'return') {
+                                            if(from.diff(to, 'days') > 0) {
+                                                Alert.alert('Invalid return date');
+                                                return;
+                                            }
+                                            if(from.format('YYYY-MM-DD') == 'Invalid date' || to.format('YYYY-MM-DD') == 'Invalid date' ) {
+                                                Alert.alert('Select return date again.');
+                                                return;
+                                            }
+                                            
+                                        }
+                                        
+                                    }
+                                    else {
+                                        Alert.alert('Invalid airport code');
+                                        return;
+                                    }
+                                    var temp = this.state;
+                                    if(from.format('YYYY-MM-DD') == 'Invalid date') {
+                                        Alert.alert('Select date again.');
+                                        return;
+                                    }
+                                    temp.from = temp.from.toUpperCase();
+                                    temp.to = temp.to.toUpperCase();
+                                    temp.depDate = from.format('YYYY-MM-DD');
+                                    temp.returnDate = to.format('YYYY-MM-DD');
+                                    this.props.navigation.navigate('Result', temp);
+                                    
+                                }}>
+                                    <View style={styles.btn}>
+                                        <Text style={{fontSize:24, color: '#fff', }} >SEARCH FLIGHTS</Text>
+                                        <Icon
+                                            style={{marginLeft: 15}}
+                                            name="ios-plane"
+                                            size={30}
+                                            color="#ffffff"
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+                            );
                         }
-                        else {
-                            Alert.alert('Invalid airport code');
-                            return;
-                        }
-                        var temp = this.state;
-                        if(from.format('YYYY-MM-DD') == 'Invalid date') {
-                            Alert.alert('Select date again.');
-                            return;
-                        }
-                        temp.from = temp.from.toUpperCase();
-                        temp.to = temp.to.toUpperCase();
-                        temp.depDate = from.format('YYYY-MM-DD');
-                        temp.returnDate = to.format('YYYY-MM-DD');
-                        this.props.navigation.navigate('Result', temp);
-                        
-                    }}>
-                        <View style={styles.btn}>
-                            <Text style={{fontSize:24, color: '#fff', }} >SEARCH FLIGHTS</Text>
-                            <Icon
-                                style={{marginLeft: 15}}
-                                name="ios-plane"
-                                size={30}
-                                color="#ffffff"
-                            />
-                        </View>
-                    </TouchableOpacity>
+                    })()}
                 </View>
             // </ImageBackground>
         )

@@ -1,0 +1,38 @@
+{
+    "itinerary_id": "6F3E3990-D8BB-806F-A095-DD2838D622D7",
+    "air_seg_locator": [
+        "DCAI*HJFTM"
+    ],
+    "air_terminal": [
+        "-",
+        "-",
+        "T1 - DOMESTIC"
+    ],
+    "air_terminal_code": [
+        "-",
+        "-",
+        "1"
+    ],
+    "dep_air_terminal": [
+        "TERMINAL 2 DOM AND INTL"
+    ],
+    "dep_air_terminal_code": [
+        "2"
+    ],
+    "pnr_no": "MLUPHQ",
+    "pnr_data": "Sample Pnr Data",
+    "booking_id": "VML-TVDUDEBQ",
+    "bill_ref_id": "81B15593-18D3-537E-9042-36C9387A25F8",
+    "booking_status": 1,
+    "last_ticket_date": "2018-04-01",
+    "reservation": {
+        "seat_request": "success",
+        "seat_response": "fail",
+        "seat": []
+    },
+    "booking_request": "Success",
+    "Booking_Response": "Success",
+    "error": "none",
+    "ticketing_status": "",
+    "ticket_number": ""
+}

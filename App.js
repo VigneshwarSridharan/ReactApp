@@ -5,6 +5,7 @@ import { StackNavigator } from 'react-navigation';
 import HomeScreen from './components/home-screen';
 import FlightResult from './components/flight-result';
 import ItinDetails from './components/itin-details';
+import PassengerDetails from './components/passenger-details';
 
 const RootStack = StackNavigator(
   {
@@ -16,6 +17,9 @@ const RootStack = StackNavigator(
     },
     ItinDetailsScreen: {
       screen: ItinDetails,
+    },
+    PassengerDetailsScreen: {
+      screen: PassengerDetails,
     }
   },
   {

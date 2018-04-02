@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { TabNavigator } from 'react-navigation'; // Version can be specified in package.json
 
 import Moment from 'react-moment';
@@ -105,11 +105,6 @@ class FirstScreen extends React.Component {
             </ScrollView>
           </View>
         </View>
-        <TouchableOpacity>
-          <View style={styles.fixedBtn}>
-            <Text style={{ fontSize: 24, color: '#fff', }} >BOOK NOW</Text>
-          </View>
-        </TouchableOpacity>
       </View>
     );
   }
@@ -121,7 +116,7 @@ export default class itin extends React.Component {
     const { params } = navigation.state;
 
     return {
-      title: params ? params.title : 'Flight Details',
+      title: params.title ? params.title : 'Flight Details',
     }
   };
   render() {
@@ -155,7 +150,23 @@ export default class itin extends React.Component {
           }
         },
       });
-    return <RootStack screenProps={params.data} />;
+    return (
+      <View style={styles.container}>
+        <RootStack screenProps={params.data} />
+        <TouchableOpacity 
+          onPress={() => {
+            this.props.navigation.navigate('PassengerDetailsScreen', {
+                title: 'Passenger Details',
+                data: params.data
+            });
+          }}
+        >
+          <View style={styles.fixedBtn}>
+            <Text style={{ fontSize: 24, color: '#fff', }} >BOOK NOW</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    )
   }
 }
 
@@ -164,7 +175,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    paddingTop: 24,
     backgroundColor: '#ecf0f1',
 
   },
