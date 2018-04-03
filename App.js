@@ -7,6 +7,7 @@ import FlightResult from './components/flight-result';
 import ItinDetails from './components/itin-details';
 import PassengerDetails from './components/passenger-details';
 import BookingPage from './components/booking-page';
+import AirportCode from './components/airport-code';
 
 const StackScreens = StackNavigator(
   {
@@ -47,9 +48,24 @@ const StackScreens = StackNavigator(
   }
 );
 
+const ModalStack = StackNavigator(
+  {
+    Main: {
+      screen: StackScreens,
+    },
+    AirportcodeScreen : {
+      screen: AirportCode,
+    }
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  }
+);
+
 const RootStack = DrawerNavigator({
   Flights: {
-    screen: StackScreens,
+    screen: ModalStack,
     navigationOptions: {
       title: 'Flights'
     }
