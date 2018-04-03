@@ -5,9 +5,41 @@ import { TabNavigator } from 'react-navigation'; // Version can be specified in 
 import Moment from 'react-moment';
 class HomeScreen extends React.Component {
   render() {
+    const params = this.props.screenProps;
+    var total=0;
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Fare Details!</Text>
+      <View style={{ flex: 1, }}>
+        <View style={{ padding: 15, marginTop: 10}}>
+          <View style={{ height: 50, alignItems: 'center', flexDirection: 'row', padding: 10, backgroundColor: '#e67e22' }}>
+            <Text style={{ flex: 1, color: '#ffffff' }}>Pax Type</Text>
+            <Text style={{ flex: 1, color: '#ffffff' }}>No Of Pax</Text>
+            <Text style={{ flex: 1, color: '#ffffff' }}>Total Fare</Text>
+          </View>
+          {params.itin_fare.map((fareItem, inx) => {
+            var perAlt = Number(fareItem.equiv_fare_amount);
+            fareItem.itin_tax.map((amt) => {
+              perAlt += Number(amt.tax_amount);
+            });
+            total += perAlt;
+            perAlt = perAlt.toFixed(2);
+            total = total.toFixed(2);
+            return (
+              <View key={inx}>
+                <View style={{ height: 50, alignItems: 'center', flexDirection: 'row', padding: 10, backgroundColor: '#fff'  }}>
+                  <Text style={{ flex: 1 }}>Adult</Text>
+                  <Text style={{ flex: 1 }}>1</Text>
+                  <Text style={{ flex: 1 }}>C$ {perAlt}</Text>
+                </View>
+                <View style={{borderBottomColor: '#ededed', borderBottomWidth: 1 }}></View>
+              </View>
+            );
+          })}
+          <View style={{ height: 50, alignItems: 'center', flexDirection: 'row', padding: 10, backgroundColor: '#fff' }} >
+            <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 14 }}>Total Amount</Text>
+            <Text style={{ flex: 1 }}></Text>
+            <Text style={{ flex: 1, fontWeight: 'bold', fontSize: 14 }}>C$ {total}</Text>
+          </View>
+        </View>
       </View>
     );
   }
@@ -25,9 +57,9 @@ class FirstScreen extends React.Component {
   render() {
     const params = this.props.screenProps;
     return (
-      <View style={{ justifyContent: 'space-between', flex: 1, }}>
-        <View style={styles.container}>
-          <View style={{ padding: 15 }}>
+      <View style={{ flex: 1, }}>
+        <View>
+          <View style={{ padding: 15, marginTop: 10 }}>
             <View style={{ height: 50, alignItems: 'center', flexDirection: 'row', padding: 10, backgroundColor: '#e67e22' }}>
               <Text style={{ flex: 1, color: '#ffffff' }}>Depart</Text>
               <Text style={{ flex: 1, color: '#ffffff' }}>Arrive</Text>
@@ -42,7 +74,7 @@ class FirstScreen extends React.Component {
                 var taairport = this.state.airports[taairport_code].split('|');
                 return (
                   <View key={inx}>
-                    <Text style={{fontSize:18, marginBottom: 15}}>{tdairport[2]} - {taairport[2]}</Text>
+                    <Text style={{ fontSize: 18, marginBottom: 15 }}>{tdairport[2]} - {taairport[2]}</Text>
                     {trips.itin_segs.map((seg, i) => {
                       var dairport_code = seg.depart_airport;
                       var dairport = this.state.airports[dairport_code].split('|');
@@ -55,8 +87,8 @@ class FirstScreen extends React.Component {
                       var duration = Number(seg.travel_time);
                       duration = duration.toFixed(2);
                       duration = {
-                        day: duration/24,
-                        hrs: Number((duration%24).toString().split('.')[0]),
+                        day: duration / 24,
+                        hrs: Number((duration % 24).toString().split('.')[0]),
                         min: Number(duration.toString().split('.')[1])
                       }
                       return (
@@ -153,11 +185,11 @@ export default class itin extends React.Component {
     return (
       <View style={styles.container}>
         <RootStack screenProps={params.data} />
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => {
             this.props.navigation.navigate('PassengerDetailsScreen', {
-                title: 'Passenger Details',
-                data: params.data
+              title: 'Passenger Details',
+              data: params.data
             });
           }}
         >

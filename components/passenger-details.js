@@ -50,18 +50,20 @@ export default class PassengerDetails extends Component {
                 <View style={{ justifyContent: 'space-between', flex: 1, }}>
                     <View style={styles.container}>
                         <ScrollView>
-                            <Text style={{ fontSize: 18 }}>Passenger Details:</Text>
+                            <Text style={{ fontSize: 18, marginBottom: 30 }}>Passenger Details:</Text>
                             <View style={{ marginBottom: 15 }}>
-                                <Picker
-                                    mode="dropdown"
-                                    selectedValue={this.state.title ? this.state.title : ''}
-                                    onValueChange={(itemValue, itemIndex) => { this.setState({ title: itemValue }); this.firstNameInput.focus() }}>
-                                    <Picker.Item label="Title" value="" />
-                                    <Picker.Item label="Mr" value="Mr" />
-                                    <Picker.Item label="Mrs" value="Mrs" />
-                                    <Picker.Item label="Ms" value="Ms" />
-                                    <Picker.Item label="Miss" value="Miss" />
-                                </Picker>
+                                <View style={{borderBottomColor: '#ccc', borderBottomWidth: 1}}>
+                                    <Picker
+                                        mode="dropdown"
+                                        selectedValue={this.state.title ? this.state.title : ''}
+                                        onValueChange={(itemValue, itemIndex) => { this.setState({ title: itemValue }); this.firstNameInput.focus() }}>
+                                        <Picker.Item label="Title" value="" />
+                                        <Picker.Item label="Mr" value="Mr" />
+                                        <Picker.Item label="Mrs" value="Mrs" />
+                                        <Picker.Item label="Ms" value="Ms" />
+                                        <Picker.Item label="Miss" value="Miss" />
+                                    </Picker>
+                                </View>
                             </View>
                             <View style={{ marginBottom: 15 }}>
                                 <TextInput
@@ -165,24 +167,12 @@ export default class PassengerDetails extends Component {
                                         Alert.alert('Fill all information to booking');
                                         return;
                                     }
-                                    var req = this.state;
-                                    var dob = moment(req.pax_bod, 'DD/MM/YYYY');
-                                    var today = moment();
-                                    var age = Math.abs(dob.diff(today, 'year'));
-                                    req.pax_bod = dob.format('YYYY-MM-DD');
-                                    if(req.title == "Mr" || req.title == 'Mrs') { req.gender = 'M' }
-                                    else if(req.title == "Ms" || req.title == 'Miss') { req.gender = 'F' }
-                                    req.age = age;
-                                    req.itinId = params.data.air_itinerary_id;
-                                    req.searchId = params.data.searchId;
-                                    var url = Object.keys(req).map(function(key) {
-                                        return key + '=' + req[key];
-                                        }).join('&');
-                                    fetch('http://otpdev.wintlt.com/dev/team/vignesh/flight/public/api/flightbooking?'+url).then(res=>res.json()).then(res => {
-                                        this.setState({result: res});
+                                    this.props.navigation.navigate('BookingPageScreen', {
+                                        title: 'Wait a moment',
+                                        data: this.state,
+                                        itin: params.data,
                                     });
-                                    this.setState({submit: true})
-                                    
+                                    return;
                                 }}>
                                     <View style={styles.btn}>
                                         <Text style={{ fontSize: 24, color: '#fff', }} >PAY NOW</Text>

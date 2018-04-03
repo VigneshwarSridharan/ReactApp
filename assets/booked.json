@@ -1,0 +1,24 @@
+[{
+	"itinerary_id": "44B85D7C-7447-EEB5-DDC3-46DE779365A0",
+	"air_seg_locator": ["DCAI*H5LS1", "DCAI*H5LS1", "DCAI*H5LS1", "DCAI*H5LS1"],
+	"air_terminal": ["-", "-", "-", "-", "T4 - INTERNATIONAL", "TERMINAL 3", "-", "-"],
+	"air_terminal_code": ["-", "-", "-", "-", "4", "3", "-", "-"],
+	"dep_air_terminal": ["TERMINAL 3", "-", "-", "T3 - INTERNATIONAL"],
+	"dep_air_terminal_code": ["3", "-", "-", "3"],
+	"pnr_no": "KJLDDQ",
+	"pnr_data": "Sample Pnr Data",
+	"booking_id": "ZPV-6X3KVGD9",
+	"bill_ref_id": "2EA5D2AF-6567-AF75-2E93-0776868366C1",
+	"booking_status": 1,
+	"last_ticket_date": "2018-04-02",
+	"reservation": {
+		"seat_request": "success",
+		"seat_response": "fail",
+		"seat": []
+	},
+	"booking_request": "Success",
+	"Booking_Response": "Success",
+	"error": "none",
+	"ticketing_status": "",
+	"ticket_number": ""
+}]

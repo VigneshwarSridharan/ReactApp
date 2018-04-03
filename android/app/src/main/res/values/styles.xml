@@ -5,6 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
+        <item name="android:datePickerDialogTheme">@style/datePickerTheme</item>
     </style>
     <style name="SpinnerItem">
         <item name="android:textSize">24dp</item>
@@ -14,4 +15,9 @@
         <item name="android:padding">5dp</item>
     </style>
 
+    <style name="datePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#e67e22</item>
+        <item name="colorControlActivated">#e67e22</item>
+        <item name="colorControlHighlight">#e67e22</item>
+    </style>
 </resources>

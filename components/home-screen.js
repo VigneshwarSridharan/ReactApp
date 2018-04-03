@@ -7,10 +7,12 @@ import {
   StatusBar,
   ImageBackground,
   TouchableOpacity,
+  TouchableNativeFeedback,
   TextInput,
   Alert,
   ScrollView,
-  Keyboard
+  Keyboard,
+  Image
 } from 'react-native';
 
 import DatePicker from 'react-native-datepicker'
@@ -34,9 +36,27 @@ export default class HomeScreen extends Component {
             returnDate: moment().add(2,'day').format('DD/MM/YYYY'),
             keybodarOpen: false
         }
+        console.log('viky');
     }
     static navigationOptions = {
-        title: 'TripZumi',
+        headerLeft: (
+            <TouchableOpacity activeOpacity={0.9}>
+                <Icon name="md-menu" color="#ffffff" style={{marginLeft:15}} size={32} />
+            </TouchableOpacity>
+        ),
+        headerTitle: (
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Image source={require('../assets/images/trip_zumi_logo_full.png')} style={{width: 37, height: 32, marginRight:10 }} />
+                <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#ffffff'}}>TripZumi</Text>
+            </View>
+        ),
+        headerRight: (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 15 }}>
+              <Image source={require('../assets/images/ca.png') } style={{ height: 32, width: 32, marginRight: 10}}  />
+              <Text style={{ fontSize: 20, color: '#ffffff'}}>CAD</Text>
+            </View>
+            
+          ),
     };
     componentWillMount () {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -72,6 +92,8 @@ export default class HomeScreen extends Component {
                                 <View style={{ flex:1 }} >
                                     <Text style={{ color: '#e67e22', fontSize: 18 }}>From:</Text>
                                     <TextInput
+                                        maxLength={3}
+                                        autoCapitalize="characters"
                                         underlineColorAndroid = "transparent"
                                         placeholderTextColor = "#e67e22"
                                         returnKeyType="next"
@@ -79,6 +101,7 @@ export default class HomeScreen extends Component {
                                         spellCheck= {false}
                                         style={{  borderBottomColor: '#ccc', borderBottomWidth: 1,color: '#333', fontSize: 24 }}
                                         onChangeText={(text) => this.setState({from: text})}
+                                        // value={this.state.from.toUpperCase()}
                                         onSubmitEditing={() => this.toInput.focus()}
                                     />
                                 </View>
@@ -91,7 +114,9 @@ export default class HomeScreen extends Component {
                                 </View>
                                 <View style={{ flex:1 }} >
                                     <Text style={{ color: '#e67e22', fontSize: 18 }}>To:</Text>
-                                    <TextInput 
+                                    <TextInput
+                                        maxLength={3}
+                                        autoCapitalize="characters"
                                         underlineColorAndroid = "transparent"
                                         placeholderTextColor = "#e67e22"
                                         returnKeyType="next"
@@ -99,12 +124,13 @@ export default class HomeScreen extends Component {
                                         spellCheck= {false}
                                         style={{ borderBottomColor: '#ccc', borderBottomWidth: 1, color: '#333', fontSize: 24 }}
                                         onChangeText={(text) => this.setState({to: text})}
+                                        // value={this.state.to.toUpperCase())}
                                         ref={(input) => this.toInput = input}
                                     />
                                 </View>
                             </View>
                             <View style={{ marginBottom: 30 }}>
-                                <Text style={{ color: '#e67e22', fontSize: 18 }}>Departure:</Text>
+                                <Text style={{ color: '#e67e22', fontSize: 18 }}>Departure Date:</Text>
                                 <View style={{ flexDirection: 'row',alignItems: 'center', borderBottomWidth:1, borderBottomColor: '#cccccc' }}>
                                     <View style={{ flex:1 }}>
                                     <DatePicker
@@ -130,7 +156,7 @@ export default class HomeScreen extends Component {
                                             textAlign: 'left'
                                         }
                                         }}
-                                        onDateChange={(date) => {this.setState({depDate: date})}}
+                                        onDateChange={(date) => {this.setState({depDate: date}); this.setState({returnDate: moment(this.state.depDate, 'DD/MM/YYYY').add(1,'day').format('DD/MM/YYYY')})}}
                                     />
                                     </View>
                                     <View>
@@ -146,7 +172,7 @@ export default class HomeScreen extends Component {
                                 if(this.state.tripType=='return') {
                                     return (
                                         <View style={{ marginBottom: 30 }}>
-                                            <Text style={{ color: '#e67e22', fontSize: 18 }}>Departure:</Text>
+                                            <Text style={{ color: '#e67e22', fontSize: 18 }}>Return Date:</Text>
                                             <View style={{ flexDirection: 'row',alignItems: 'center', borderBottomWidth:1, borderBottomColor: '#cccccc' }}>
                                                 <View style={{ flex:1 }}>
                                                 <DatePicker
@@ -155,7 +181,7 @@ export default class HomeScreen extends Component {
                                                     mode="date"
                                                     placeholder="select date"
                                                     format="DD/MM/YYYY"
-                                                    minDate={moment().add(2,'day').format('DD/MM/YYYY')}
+                                                    minDate={moment(this.state.depDate, 'DD/MM/YYYY').add(1,'day').format('DD/MM/YYYY')}
                                                     confirmBtnText="Confirm"
                                                     cancelBtnText="Cancel"
                                                     showIcon={false}
@@ -197,7 +223,7 @@ export default class HomeScreen extends Component {
                                         />
                                     </View>
                                     <View>
-                                        <Text style={{fontSize: 24, color: '#333333'}}>1</Text>
+                                        <Text style={{fontSize: 24, color: '#333333'}}>1 Adult</Text>
                                         <Text style={{fontSize: 18}}>Passenger</Text>
                                     </View>
                                 </View>
@@ -212,7 +238,7 @@ export default class HomeScreen extends Component {
                     {(()=>{
                         if(!this.state.keybodarOpen) {
                             return (
-                                <TouchableOpacity activeOpacity={0.9} onPress={() => {
+                                <TouchableNativeFeedback background={TouchableNativeFeedback.SelectableBackground()} onPress={() => {
                                     var from = moment(this.state.depDate, 'DD/MM/YYYY');
                                     var to = moment(this.state.returnDate, 'DD/MM/YYYY');
                                     if(this.state.from.length == 3 && this.state.to.length == 3 )
@@ -255,7 +281,7 @@ export default class HomeScreen extends Component {
                                             color="#ffffff"
                                         />
                                     </View>
-                                </TouchableOpacity>
+                                </TouchableNativeFeedback>
                             );
                         }
                     })()}
@@ -263,71 +289,6 @@ export default class HomeScreen extends Component {
             // </ImageBackground>
         )
     }
-}
-class HomeScreenOld extends Component {
-    static navigationOptions = {
-        title: 'TripZumi',
-    };
-  render() {
-    return (
-        <View style={styles.container}>
-            <StatusBar
-                backgroundColor="#e67e22"
-            />
-            <View style={styles.btn}>
-                <Button
-                    title="One Way"
-                    onPress={() => {
-                        this.props.navigation.navigate('Result', {
-                            title: 'Chennai to Toronto',
-                            json: 'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-to-yyz.json',
-                        });
-                    }}
-                />
-                <Text>Chennai to Toronto</Text>
-            </View>
-            
-            <View style={styles.btn}>
-                <Button
-                    title="Round Trip"
-                    onPress={() => {
-                        this.props.navigation.navigate('Result', {
-                            title: 'Chennai Toronto Return',
-                            json: 'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-yyz.json',
-                        });
-                    }}
-                />
-                <Text>Chennai Toronto Return</Text>
-            </View>
-
-            <View style={styles.btn}>
-                <Button
-                    title="Multi City - 3"
-                    onPress={() => {
-                        this.props.navigation.navigate('Result', {
-                            title: 'MAA - DEL - YYZ - LHR',
-                            json: 'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-del-yyz-lhr.json',
-                        });
-                    }}
-                />
-                <Text>MAA - DEL - YYZ - LHR</Text>
-            </View>
-
-            <View style={styles.btn}>
-                <Button
-                    title="Multi City - 4"
-                    onPress={() => {
-                        this.props.navigation.navigate('Result', {
-                            title: 'MAA - DEL - YYZ - LON - SIN',
-                            json: 'http://otpdev.wintlt.com/dev/team/vignesh/search-layout-a5/assets/maa-del-yyz-lon-sin.json',
-                        });
-                    }}
-                />
-                <Text>MAA - DEL - YYZ - LON - SIN</Text>
-            </View>
-        </View>
-    )
-  }
 }
 
 // brand color #e67e22
@@ -348,7 +309,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         marginBottom: 30,
         borderWidth: 1,
-        borderColor: '#ededed'
+        borderColor: '#cccccc'
     },
     switchItem: {
         flex:1,
